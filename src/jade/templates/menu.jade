@@ -1,0 +1,16 @@
+ion-side-menus(enable-menu-with-back-views="false")
+  ion-side-menu-content
+    ion-nav-bar.bar-calm
+      ion-nav-back-button Back
+      ion-nav-buttons(side="left")
+        button.button.button-icon.button-clear.ion-navicon(menu-toggle="left") 
+      
+      ion-nav-title 🔥KoonicStarter
+    
+    ion-nav-view(animation="slide-left-right" name="menu_content")
+      //- view contents gets loaded here
+
+  ion-side-menu(side="left")
+    ion-nav-view
+      ul.list
+        li.item(ng-repeat="i in [1,2,3,4,5,6,7]") Menu Item {{i}}
