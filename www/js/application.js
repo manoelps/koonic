@@ -75,63 +75,7 @@ angular.module('ionic_starter').config(function($stateProvider, $urlRouterProvid
   return $urlRouterProvider.otherwise('/app/home');
 });
 
-angular.module('ionic_starter').controller('HomeController', function($scope, $interval, $http) {
-  var cupsCount, footballUsersCount, latestTeamNames, latestUsernames, usersCount;
-  $interval((function() {
-    if ($scope.auto_update) {
-      return $scope.refreshCount();
-    }
-  }), 300000);
-  $scope.auto_update = true;
-  usersCount = function() {
-    return $http({
-      url: 'http://fantausers.cloudapp.net/api/v1/users/count',
-      method: 'GET'
-    }).then(function(response) {
-      return $scope.users = response.data;
-    });
-  };
-  latestUsernames = function() {
-    return $http({
-      url: 'http://fantausers.cloudapp.net/api/v1/users/latest_usernames',
-      method: 'GET'
-    }).then(function(response) {
-      return $scope.latest_usernames = response.data;
-    });
-  };
-  footballUsersCount = function() {
-    return $http({
-      url: 'http://www.fantarevolution.com/api/v1/public/football_users_count',
-      method: 'GET'
-    }).then(function(response) {
-      return $scope.football_users = response.data;
-    });
-  };
-  cupsCount = function() {
-    return $http({
-      url: 'http://fantarevolution.com/api/v1/cups/teams_count',
-      method: 'GET'
-    }).then(function(response) {
-      return $scope.cups = response.data;
-    });
-  };
-  latestTeamNames = function() {
-    return $http({
-      url: 'http://fantarevolution.com/api/v1/public/latest_team_names',
-      method: 'GET'
-    }).then(function(response) {
-      return $scope.latest_team_names = response.data;
-    });
-  };
-  $scope.refreshCount = function() {
-    usersCount();
-    cupsCount();
-    footballUsersCount();
-    latestTeamNames();
-    return latestUsernames();
-  };
-  return $scope.refreshCount();
-});
+angular.module('ionic_starter').controller('HomeController', function($scope, $interval, $http) {});
 
 angular.module('ionic_starter').service('Example', function($q, $http) {
   var urlBase;

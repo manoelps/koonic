@@ -11,10 +11,17 @@ var sh = require('shelljs');
 var coffee = require('gulp-coffee');
 var jade = require('gulp-jade');
 
+// Error Handling
+
+function handleError(err) {
+  console.log(err.toString());
+  this.emit('end');
+}
+
 // Sources Paths
 
 var paths = {
-  sass: ['./scss/**/*.scss', './src/sass/**/*.sass'],
+  sass: ['./src/scss/**/*.scss', './src/sass/**/*.sass'],
   coffee: ['./src/coffee/**/*.coffee'],
   jade: ['./src/jade/**/*.jade']
 };
@@ -26,7 +33,7 @@ gulp.task('default', ['sass', 'coffee', 'jade', 'watch']);
 // Gulp Sass Task
 
 gulp.task('sass', function(done) {
-  gulp.src(paths.sass)
+  gulp.src('./src/sass/ionic.app.scss')
     .pipe(sass({
       errLogToConsole: true
     }))
@@ -46,7 +53,7 @@ gulp.task('coffee', function(done) {
   .pipe(coffee({
     bare: true
   })
-  .on('error', gutil.log.bind(gutil, 'Coffee Error')))
+  .on('error', handleError))
   .pipe(concat('application.js'))
   .pipe(gulp.dest('./www/js'))
   .on('end', done);
@@ -61,7 +68,7 @@ gulp.task('jade', function(done) {
     .pipe(jade({
       locals: YOUR_LOCALS
     })
-    .on('error', gutil.log.bind(gutil, 'Jade Error')))
+    .on('error', handleError))
     .pipe(gulp.dest('./www/'))
     .on('end', done);
 });

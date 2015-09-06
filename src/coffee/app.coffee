@@ -9,4 +9,3 @@ angular.module('ionic_starter').run ($rootScope, $ionicPlatform ) ->
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar true
     if window.StatusBar
       StatusBar.styleDefault()
- 
