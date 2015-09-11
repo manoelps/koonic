@@ -1,5 +1,7 @@
 # Koonic Starter
 
+[![Join the chat at https://gitter.im/macchie/koonic](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/macchie/koonic?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A powerful Ionic Starter including Jade, Sass &amp; Coffee.
 
 ## Setup
