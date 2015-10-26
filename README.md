@@ -1,6 +1,6 @@
 # Koonic Starter
 
-[![Donate to support](http://www.koodit.it/macchie/donate_button.png =150px)](http://www.paypal.me/macchie)
+[![Donate to support](http://www.koodit.it/macchie/donate_button.png =150x)](http://www.paypal.me/macchie)
 
 [![Join the chat at https://gitter.im/macchie/koonic](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/macchie/koonic?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
