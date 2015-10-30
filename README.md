@@ -31,7 +31,7 @@ To start editing this Ionic Project clone the repo or download the zip:
 To clone this repo simply launch this command:
 
 ```sh
-$ git clone https://github.com/imakkie/koonic
+$ git clone https://github.com/macchie/koonic
 ```
 
 ## Install NPM Dependencies
