@@ -12,52 +12,6 @@ angular.module('ionic_starter').run(function($rootScope, $ionicPlatform) {
 });
 
 angular.module('ionic_starter').config(function($stateProvider, $urlRouterProvider, $httpProvider) {
-  var param;
-  $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
-  param = function(obj) {
-    var fullSubName, i, innerObj, name, query, subName, subValue, value;
-    query = '';
-    name = void 0;
-    value = void 0;
-    fullSubName = void 0;
-    subName = void 0;
-    subValue = void 0;
-    innerObj = void 0;
-    i = void 0;
-    for (name in obj) {
-      name = name;
-      value = obj[name];
-      if (value instanceof Array) {
-        for (i in value) {
-          i = i;
-          subValue = value[i];
-          fullSubName = name + '[' + i + ']';
-          innerObj = {};
-          innerObj[fullSubName] = subValue;
-          query += param(innerObj) + '&';
-        }
-      } else if (value instanceof Object) {
-        for (subName in value) {
-          subName = subName;
-          subValue = value[subName];
-          fullSubName = name + '[' + subName + ']';
-          innerObj = {};
-          innerObj[fullSubName] = subValue;
-          query += param(innerObj) + '&';
-        }
-      } else if (value !== void 0 && value !== null) {
-        query += encodeURIComponent(name) + '=' + encodeURIComponent(value) + '&';
-      }
-    }
-    if (query.length) {
-      return query.substr(0, query.length - 1);
-    } else {
-      return query;
-    }
-  };
-  $httpProvider.defaults.transformRequest = function(data, getHeaders) {
-    return param(data);
-  };
   $stateProvider.state('app', {
     url: '/app',
     abstract: true,
