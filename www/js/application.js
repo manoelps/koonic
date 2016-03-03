@@ -1,45 +1,61 @@
-angular.module('ionic_starter', ['ionic', 'ionic.service.core']);
+angular.module('ionic_starter', ['ionic', 'ionic.service.core', 'ionic.service.analytics']);
 
-angular.module('ionic_starter').run(function($rootScope, $ionicPlatform, $interval, IonicUser) {
+angular.module('ionic_starter').run(function($rootScope, $ionicPlatform, $ionicAnalytics, $ionicPopup) {
   return $ionicPlatform.ready(function() {
+    var authSettings, current_user;
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
     if (window.StatusBar) {
       StatusBar.styleDefault();
     }
-    IonicUser.getUser().then(function(resp) {
-      var user_data;
-      $rootScope.current_user = resp.data;
-      user_data = {
-        name: 'Andrea',
-        surname: 'Macchieraldo',
-        nickname: 'macchie',
-        image: 'http://minimemes.net/wp-content/uploads/2013/06/business_cat.jpg',
-        age: 24,
-        can_code: ['Coffee', 'Jade', 'Sass']
-      };
-      return IonicUser.setUserData(user_data).then(function() {
-        var push;
-        Ionic.io();
-        push = new Ionic.Push({
-          'debug': true,
-          'onNotification': function(notification) {
-            var payload;
-            payload = notification.payload;
-            return console.log(notification, payload);
-          }
+    $ionicAnalytics.register();
+    current_user = {
+      'username': 'macchie',
+      'email': 'a.macchieraldo@gmail.com',
+      'password': 'password'
+    };
+    current_user.custom = {
+      'first_name': 'Andrea',
+      'last_name': 'Macchieraldo',
+      'favorite_color': 'blue',
+      'website': 'http://www.koodit.it'
+    };
+    $rootScope.signupSuccess = function(resp) {
+      return console.log(resp);
+    };
+    $rootScope.signupFailure = function(resp) {
+      console.log(resp);
+      if (resp.errors.indexOf('conflict_email') !== -1) {
+        $ionicPopup.alert({
+          title: 'Error',
+          template: 'Email already present.'
         });
-        return push.register(function(token) {
-          console.log('Got Token:', token.token);
-          $rootScope.current_user.addPushToken(token);
-          return $rootScope.current_user.save();
+      }
+      return $rootScope.sign_in(current_user);
+    };
+    $rootScope.sign_up = function(user) {
+      return Ionic.Auth.signup(user).then($rootScope.signupSuccess, $rootScope.signupFailure);
+    };
+    $rootScope.sign_up(current_user);
+    $rootScope.signinSuccess = function(resp) {
+      return console.log(resp);
+    };
+    $rootScope.signinFailure = function(resp) {
+      console.log(resp);
+      if (resp.errors.indexOf('conflict_email') !== -1) {
+        return $ionicPopup.alert({
+          title: 'Error',
+          template: 'Email already present.'
         });
-      });
-    });
-    return $interval(function() {
-      return $rootScope.current_time = new Date();
-    }, 1000);
+      }
+    };
+    authSettings = {
+      'remember': true
+    };
+    return $rootScope.sign_in = function(user) {
+      return Ionic.Auth.login('basic', authSettings, user).then($rootScope.signinSuccess, $rootScope.signinFailure);
+    };
   });
 });
 
@@ -83,42 +99,5 @@ angular.module('ionic_starter').service('ExampleService', function($q, $http) {
 });
 
 angular.module('ionic_starter').service('IonicUser', function($q, $http) {
-  var user;
-  Ionic.io();
-  user = null;
-  this.getUser = function(custom_user_id) {
-    var deferred;
-    user = Ionic.User.current();
-    if (!user.id && !custom_user_id) {
-      user.id = Ionic.User.anonymousId();
-    } else {
-      user.id = custom_user_id;
-    }
-    deferred = $q.defer();
-    user.save().then(function(success) {
-      success.data = user;
-      return deferred.resolve(success);
-    }, function(failure) {
-      return deferred.reject(failure);
-    });
-    return deferred.promise;
-  };
-  this.setUserData = function(user_data) {
-    var deferred;
-    user.set('name', user_data.name);
-    user.set('surname', user_data.surname);
-    user.set('nickname', user_data.nickname);
-    user.set('image', user_data.image);
-    user.set('age', user_data.age);
-    user.set('can_code', user_data.can_code);
-    user.set('updated_at', new Date());
-    deferred = $q.defer();
-    user.save().then(function(success) {
-      return deferred.resolve(success);
-    }, function(failure) {
-      return deferred.reject(failure);
-    });
-    return deferred.promise;
-  };
   return this;
 });
