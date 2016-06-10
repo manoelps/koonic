@@ -1,13 +1,61 @@
-angular.module('ionic_starter', ['ionic']);
+angular.module('ionic_starter', ['ionic', 'ionic.service.core', 'ionic.service.analytics']);
 
-angular.module('ionic_starter').run(function($rootScope, $ionicPlatform) {
+angular.module('ionic_starter').run(function($rootScope, $ionicPlatform, $ionicAnalytics, $ionicPopup) {
   return $ionicPlatform.ready(function() {
+    var authSettings, current_user;
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
     if (window.StatusBar) {
-      return StatusBar.styleDefault();
+      StatusBar.styleDefault();
     }
+    $ionicAnalytics.register();
+    current_user = {
+      'username': 'macchie',
+      'email': 'a.macchieraldo@gmail.com',
+      'password': 'password'
+    };
+    current_user.custom = {
+      'first_name': 'Andrea',
+      'last_name': 'Macchieraldo',
+      'favorite_color': 'blue',
+      'website': 'http://www.koodit.it'
+    };
+    $rootScope.signupSuccess = function(resp) {
+      return console.log(resp);
+    };
+    $rootScope.signupFailure = function(resp) {
+      console.log(resp);
+      if (resp.errors.indexOf('conflict_email') !== -1) {
+        $ionicPopup.alert({
+          title: 'Error',
+          template: 'Email already present.'
+        });
+      }
+      return $rootScope.sign_in(current_user);
+    };
+    $rootScope.sign_up = function(user) {
+      return Ionic.Auth.signup(user).then($rootScope.signupSuccess, $rootScope.signupFailure);
+    };
+    $rootScope.sign_up(current_user);
+    $rootScope.signinSuccess = function(resp) {
+      return console.log(resp);
+    };
+    $rootScope.signinFailure = function(resp) {
+      console.log(resp);
+      if (resp.errors.indexOf('conflict_email') !== -1) {
+        return $ionicPopup.alert({
+          title: 'Error',
+          template: 'Email already present.'
+        });
+      }
+    };
+    authSettings = {
+      'remember': true
+    };
+    return $rootScope.sign_in = function(user) {
+      return Ionic.Auth.login('basic', authSettings, user).then($rootScope.signinSuccess, $rootScope.signinFailure);
+    };
   });
 });
 
@@ -31,7 +79,7 @@ angular.module('ionic_starter').config(function($stateProvider, $urlRouterProvid
 
 angular.module('ionic_starter').controller('HomeController', function($scope, $interval, $http) {});
 
-angular.module('ionic_starter').service('Example', function($q, $http) {
+angular.module('ionic_starter').service('ExampleService', function($q, $http) {
   var urlBase;
   urlBase = '';
   this.test = function() {
@@ -47,5 +95,9 @@ angular.module('ionic_starter').service('Example', function($q, $http) {
     });
     return deferred.promise;
   };
+  return this;
+});
+
+angular.module('ionic_starter').service('IonicUser', function($q, $http) {
   return this;
 });

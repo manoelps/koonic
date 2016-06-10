@@ -1,4 +1,4 @@
-angular.module('ionic_starter').service('Example', ($q, $http)->
+angular.module('ionic_starter').service('ExampleService', ($q, $http)->
 
   urlBase = ''
 
