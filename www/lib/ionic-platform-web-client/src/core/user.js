@@ -22,7 +22,10 @@ var userAPIEndpoints = {
     return userAPIBase + '/' + userModel.id;
   },
   'save': function(userModel) {
-    return userAPIBase + '/' + userModel.id + '/custom';
+    return userAPIBase + '/' + userModel.id;
+  },
+  'passwordReset': function(userModel) {
+    return userAPIBase + '/' + userModel.id + '/password-reset';
   }
 };
 
@@ -257,14 +260,19 @@ export class User {
   }
 
   getAPIFormat() {
-    return this.data.data;
+    var apiFormat = {};
+    for (var key in this.details) {
+      apiFormat[key] = this.details[key];
+    }
+    apiFormat.custom = this.data.data;
+    return apiFormat;
   }
 
   getFormat(format) {
     var self = this;
     var formatted = null;
     switch (format) {
-      case 'api-custom-save':
+      case 'api-save':
         formatted = self.getAPIFormat();
         break;
     }
@@ -339,8 +347,8 @@ export class User {
       self._store();
       new APIRequest({
         'uri': userAPIEndpoints.save(this),
-        'method': 'PUT',
-        'json': self.getFormat('api-custom-save')
+        'method': 'PATCH',
+        'json': self.getFormat('api-save')
       }).then(function(result) {
         self._dirty = false;
         if (!self.isFresh()) {
@@ -360,6 +368,24 @@ export class User {
       self.logger.info("a save operation is already in progress for " + this + ".");
       deferred.reject(false);
     }
+
+    return deferred.promise;
+  }
+
+  resetPassword() {
+    var self = this;
+    var deferred = new DeferredPromise();
+
+    new APIRequest({
+      'uri': userAPIEndpoints.passwordReset(this),
+      'method': 'POST'
+    }).then(function(result) {
+      self.logger.info('password reset for user');
+      deferred.resolve(result);
+    }, function(error) {
+      self.logger.error(error);
+      deferred.reject(error);
+    });
 
     return deferred.promise;
   }
