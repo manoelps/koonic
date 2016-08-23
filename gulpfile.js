@@ -10,7 +10,7 @@ concat = require('gulp-concat');
 
 sass = require('gulp-sass');
 
-minifyCss = require('gulp-minify-css');
+minifyCss = require('gulp-clean-css');
 
 rename = require('gulp-rename');
 
@@ -18,14 +18,14 @@ sh = require('shelljs');
 
 coffee = require('gulp-coffee');
 
-jade = require('gulp-jade');
+pug = require('gulp-pug');
 
 uglify = require('gulp-uglify');
 
 paths = {
   sass: ['./src/scss/**/*.scss', './src/sass/**/*.sass'],
   coffee: ['./src/coffee/**/*.coffee'],
-  jade: ['./src/jade/**/*.jade']
+  pug: ['./src/pug/**/*.pug']
 };
 
 handleError = function(err) {
@@ -33,7 +33,7 @@ handleError = function(err) {
   this.emit('end');
 };
 
-gulp.task('default', ['sass', 'coffee', 'jade', 'watch']);
+gulp.task('default', ['sass', 'coffee', 'pug', 'watch']);
 
 gulp.task('sass', function(done) {
   gulp.src('./src/sass/ionic.app.scss').pipe(sass({
@@ -55,12 +55,8 @@ gulp.task('coffee', function(done) {
   })).pipe(gulp.dest('./www/js')).on('end', done);
 });
 
-gulp.task('jade', function(done) {
-  var YOUR_LOCALS;
-  YOUR_LOCALS = {};
-  gulp.src(paths.jade).pipe(jade({
-    locals: YOUR_LOCALS
-  }).on('error', handleError)).pipe(gulp.dest('./www/')).on('end', done);
+gulp.task('pug', function(done) {
+  gulp.src(paths.pug).pipe(pug().on('error', handleError)).pipe(gulp.dest('./www/')).on('end', done);
 });
 
 gulp.task('install', ['git-check'], function() {
@@ -80,5 +76,5 @@ gulp.task('git-check', function(done) {
 gulp.task('watch', function() {
   gulp.watch(paths.sass, ['sass']);
   gulp.watch(paths.coffee, ['coffee']);
-  gulp.watch(paths.jade, ['jade']);
+  gulp.watch(paths.pug, ['pug']);
 });
